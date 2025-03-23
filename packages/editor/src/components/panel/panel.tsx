@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import "./panel.css";
 
 export interface PanelProps {
@@ -14,3 +14,27 @@ export const Panel = ({ name, children }: PanelProps) => {
     </div>
   );
 };
+
+export interface AreaProps {
+  name: string;
+  children: ReactNode;
+}
+
+const Area = ({ children, name }: AreaProps) => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  return (
+    <div className="panel-area">
+      <div
+        className="panel-area-header"
+        role="button"
+        onClick={() => setIsCollapsed(!isCollapsed)}
+      >
+        {name}
+      </div>
+      {!isCollapsed && <div className="panel-area-content">{children}</div>}
+    </div>
+  );
+};
+
+Panel.Area = Area;

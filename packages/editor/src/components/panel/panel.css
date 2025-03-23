@@ -21,3 +21,16 @@
   color: #dcdcdc;
   height: 100%;
 }
+
+.panel-area {
+  margin-top: 10px;
+}
+
+.panel-area-header {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.panel-area-content {
+  padding-left: 10px;
+}

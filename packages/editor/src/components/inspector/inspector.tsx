@@ -4,9 +4,18 @@ import { Panel } from "../panel/panel";
 export const Inspector = () => {
   const { selectedItem } = useScene();
 
+  if (!selectedItem) {
+    return <Panel name="inspector">No item selected</Panel>;
+  }
+
+  const { position } = selectedItem;
+
   return (
     <Panel name="inspector">
-      {selectedItem! ? "Name: " + selectedItem.name : "No item selected"}
+      {"Name: " + selectedItem.name}
+      <Panel.Area name="position">
+        {position.x + ", " + position.y + ", " + position.z}
+      </Panel.Area>
     </Panel>
   );
 };
