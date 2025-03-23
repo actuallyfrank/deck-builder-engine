@@ -1,17 +1,16 @@
-import { useState } from "react";
 import "./App.css";
+import { Inspector } from "./components/inspector/inspector";
+import { Layout } from "./components/layout/layout";
+import { Scene } from "./components/scene/scene";
+import { Viewport } from "./components/viewport/viewport";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-      </div>
-    </>
+    <Layout>
+      <Scene />
+      <Viewport />
+      <Inspector />
+    </Layout>
   );
 }
 

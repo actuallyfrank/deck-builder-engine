@@ -1,0 +1,23 @@
+.panel {
+  border: 1px solid #3c3c3c;
+  background-color: #2d2d2d;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-title {
+  background-color: #414141;
+  color: #ffffff;
+  padding: 8px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.panel-content {
+  padding: 8px;
+  flex-grow: 1;
+  color: #dcdcdc;
+  height: 100%;
+}
