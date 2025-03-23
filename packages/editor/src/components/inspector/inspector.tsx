@@ -1,5 +1,12 @@
+import { useScene } from "../../provider/scene-provider";
 import { Panel } from "../panel/panel";
 
 export const Inspector = () => {
-  return <Panel name="inspector">nothing selected</Panel>;
+  const { selectedItem } = useScene();
+
+  return (
+    <Panel name="inspector">
+      {selectedItem! ? "Name: " + selectedItem.name : "No item selected"}
+    </Panel>
+  );
 };

@@ -12,6 +12,9 @@ importers:
 
   packages/editor:
     dependencies:
+      core:
+        specifier: workspace:*
+        version: link:../core
       react:
         specifier: ^19.0.0
         version: 19.0.0
