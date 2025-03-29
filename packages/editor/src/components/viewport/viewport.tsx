@@ -1,6 +1,6 @@
 import { App, PIXI } from "core";
 import { Panel } from "../panel/panel";
-import { memo, RefObject, useEffect, useRef, useState } from "react";
+import { memo, RefObject, useEffect, useRef } from "react";
 import { useScene } from "../../provider/scene-provider";
 
 export const Viewport = memo(() => {
@@ -12,6 +12,9 @@ export const Viewport = memo(() => {
   );
 });
 
+await PIXI.Assets.load("sample.png");
+const sprite = PIXI.Sprite.from("sample.png");
+
 export const RenderViewport = ({
   containerRef,
 }: {
@@ -21,12 +24,14 @@ export const RenderViewport = ({
   const appRef = useRef<PIXI.Application | null>(null);
 
   useEffect(() => {
-    if (appRef.current) {
-      return;
-    }
     const initializeApp = async () => {
       const app = await App(containerRef.current!);
 
+      if (appRef.current) {
+        return;
+      }
+
+      app.stage.addChild(sprite);
       document.getElementById("viewport")?.appendChild(app.canvas);
 
       appRef.current = app;
@@ -35,11 +40,7 @@ export const RenderViewport = ({
     initializeApp();
   }, [containerRef]);
 
-  const graphics = new PIXI.Graphics();
-  graphics.beginFill(0xff0000);
-  graphics.drawRect(50, 50, 100, 100);
-  graphics.endFill();
-  appRef.current?.stage.addChild(graphics);
+  sprite.position.set(0, sprite.position.y + 2);
 
   return (
     <div
