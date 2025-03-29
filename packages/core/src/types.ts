@@ -24,5 +24,12 @@ export interface SceneItem {
   name: string;
   id: string;
   type: NodeTypes;
-  position: Vector3;
+  transform: {
+    position: Vector3;
+    scale: Vector3;
+  };
+}
+
+export interface Scene {
+  sceneItems: SceneItem[];
 }

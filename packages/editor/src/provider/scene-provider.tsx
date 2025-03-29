@@ -20,11 +20,11 @@ export const SceneProvider = ({ sceneItems, children }: SceneProviderProps) => {
 
   const selectItem = (id: string) => {
     const item = sceneItems.find((item) => item.id === id);
-    if (item) {
-      setSelectedItem(item);
+    if (!item) {
+      throw new Error("Item not found");
     }
 
-    throw new Error("Item not found");
+    setSelectedItem(item);
   };
 
   const value: SceneContextType = {

@@ -11,13 +11,13 @@ const testItems: SceneItem[] = [
     name: "test",
     id: "1",
     type: "empty",
-    position: Vector3.Zero,
+    transform: { position: Vector3.Zero, scale: new Vector3(1, 1, 1) },
   },
   {
     name: "test 2 ",
     id: "2",
     type: "box",
-    position: new Vector3(1, 2, 3),
+    transform: { position: new Vector3(1, 2, 3), scale: new Vector3(1, 1, 1) },
   },
 ];
 

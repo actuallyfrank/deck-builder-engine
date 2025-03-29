@@ -8,7 +8,9 @@ export const Inspector = () => {
     return <Panel name="inspector">No item selected</Panel>;
   }
 
-  const { position } = selectedItem;
+  const {
+    transform: { position },
+  } = selectedItem;
 
   return (
     <Panel name="inspector">
