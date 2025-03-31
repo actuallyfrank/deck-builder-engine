@@ -1,5 +1,5 @@
 import { App, PIXI } from "core";
-import { Panel } from "../panel/panel";
+import { Panel } from "../../components/panel/panel";
 import { memo, RefObject, useEffect, useRef, useState } from "react";
 import { useScene } from "../../provider/scene-provider";
 
@@ -22,7 +22,7 @@ export const RenderViewport = ({
   const { sceneItems } = useScene();
   const appRef = useRef<PIXI.Application | null>(null);
 
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const initializeApp = async () => {
@@ -60,6 +60,8 @@ export const RenderViewport = ({
       item.transform.position.y,
     );
     itemInScene.scale.set(item.transform.scale.x, item.transform.scale.y);
+
+    itemInScene.angle = item.transform.angle;
   });
 
   return (

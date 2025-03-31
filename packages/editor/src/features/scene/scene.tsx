@@ -1,4 +1,4 @@
-import { Panel } from "../panel/panel";
+import { Panel } from "../../components/panel/panel";
 import { useScene } from "../../provider/scene-provider";
 import "./scene.css";
 

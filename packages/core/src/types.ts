@@ -10,7 +10,7 @@ export class Vector2 {
   x: number;
   y: number;
 
-  constructor(x: number, y: number, z: number) {
+  constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
   }
@@ -25,6 +25,7 @@ export interface SceneItem {
   transform: {
     position: Vector2;
     scale: Vector2;
+    angle: number;
   };
 }
 
