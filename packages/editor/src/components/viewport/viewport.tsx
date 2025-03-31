@@ -13,7 +13,6 @@ export const Viewport = memo(() => {
 });
 
 await PIXI.Assets.load("sample.png");
-const sprite = PIXI.Sprite.from("sample.png");
 
 export const RenderViewport = ({
   containerRef,
@@ -31,7 +30,6 @@ export const RenderViewport = ({
         return;
       }
 
-      app.stage.addChild(sprite);
       document.getElementById("viewport")?.appendChild(app.canvas);
 
       appRef.current = app;
@@ -40,7 +38,27 @@ export const RenderViewport = ({
     initializeApp();
   }, [containerRef]);
 
-  sprite.position.set(0, sprite.position.y + 2);
+  console.log("render viewport");
+
+  sceneItems.forEach((item) => {
+    let itemInScene = appRef.current?.stage.children.find(
+      (child) => child.label === item.id,
+    );
+    if (!itemInScene) {
+      const sprite = PIXI.Sprite.from("sample.png");
+      sprite.label = item.id;
+      itemInScene = appRef.current?.stage.addChild(sprite);
+
+      console.log("add item to scene", itemInScene);
+      return;
+    }
+
+    console.log("set position", item.transform.position);
+    itemInScene.position.set(
+      item.transform.position.x,
+      item.transform.position.y,
+    );
+  });
 
   return (
     <div

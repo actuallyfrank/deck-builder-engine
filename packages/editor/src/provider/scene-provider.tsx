@@ -6,6 +6,7 @@ interface SceneContextType {
   selectedItemId: string | null;
   selectedItem: SceneItem | null;
   selectItem: (id: string) => void;
+  updateItem: (item: SceneItem) => void;
 }
 
 const SceneContext = createContext<SceneContextType | undefined>(undefined);
@@ -17,6 +18,7 @@ export interface SceneProviderProps {
 
 export const SceneProvider = ({ sceneItems, children }: SceneProviderProps) => {
   const [selectedItem, setSelectedItem] = useState<SceneItem | null>(null);
+  const [allItems, setAllItems] = useState<SceneItem[]>(sceneItems);
 
   const selectItem = (id: string) => {
     const item = sceneItems.find((item) => item.id === id);
@@ -27,11 +29,25 @@ export const SceneProvider = ({ sceneItems, children }: SceneProviderProps) => {
     setSelectedItem(item);
   };
 
+  const updateItem = (SceneItem: SceneItem) => {
+    const index = allItems.findIndex((item) => item.id === SceneItem.id);
+    if (index === -1) {
+      throw new Error("Item not found");
+    }
+
+    const newItems = [...allItems];
+    newItems[index] = SceneItem;
+
+    setAllItems(newItems);
+    setSelectedItem(SceneItem);
+  };
+
   const value: SceneContextType = {
-    sceneItems,
+    sceneItems: allItems,
     selectedItemId: selectedItem?.id || null,
     selectedItem,
     selectItem,
+    updateItem,
   };
 
   return (

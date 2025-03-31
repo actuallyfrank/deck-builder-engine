@@ -17,7 +17,10 @@ const testItems: SceneItem[] = [
     name: "test 2 ",
     id: "2",
     type: "box",
-    transform: { position: new Vector3(1, 2, 3), scale: new Vector3(1, 1, 1) },
+    transform: {
+      position: new Vector3(1, 200, 3),
+      scale: new Vector3(1, 1, 1),
+    },
   },
 ];
 
