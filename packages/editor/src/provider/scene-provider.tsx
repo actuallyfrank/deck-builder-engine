@@ -3,7 +3,7 @@ import { createContext, ReactNode, useContext, useState } from "react";
 
 interface SceneContextType {
   sceneItems: SceneItem[];
-  selectedItemId: string | null;
+  selectedItemId: string | undefined;
   selectedItem: SceneItem | null;
   selectItem: (id: string) => void;
   updateItem: (item: SceneItem) => void;
@@ -17,7 +17,9 @@ export interface SceneProviderProps {
 }
 
 export const SceneProvider = ({ sceneItems, children }: SceneProviderProps) => {
-  const [selectedItem, setSelectedItem] = useState<SceneItem | null>(null);
+  const [selectedItemId, setSelectedItemId] = useState<string | undefined>(
+    undefined,
+  );
   const [allItems, setAllItems] = useState<SceneItem[]>(sceneItems);
 
   const selectItem = (id: string) => {
@@ -26,7 +28,7 @@ export const SceneProvider = ({ sceneItems, children }: SceneProviderProps) => {
       throw new Error("Item not found");
     }
 
-    setSelectedItem(item);
+    setSelectedItemId(id);
   };
 
   const updateItem = (SceneItem: SceneItem) => {
@@ -39,13 +41,12 @@ export const SceneProvider = ({ sceneItems, children }: SceneProviderProps) => {
     newItems[index] = SceneItem;
 
     setAllItems(newItems);
-    setSelectedItem(SceneItem);
   };
 
   const value: SceneContextType = {
     sceneItems: allItems,
-    selectedItemId: selectedItem?.id || null,
-    selectedItem,
+    selectedItemId,
+    selectedItem: allItems.find((item) => item.id === selectedItemId) || null,
     selectItem,
     updateItem,
   };

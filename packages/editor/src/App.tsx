@@ -1,4 +1,4 @@
-import { SceneItem, Vector3 } from "core";
+import { SceneItem, Vector2 } from "core";
 import "./App.css";
 import { Inspector } from "./components/inspector/inspector";
 import { Layout } from "./components/layout/layout";
@@ -11,15 +11,15 @@ const testItems: SceneItem[] = [
     name: "test",
     id: "1",
     type: "empty",
-    transform: { position: Vector3.Zero, scale: new Vector3(1, 1, 1) },
+    transform: { position: Vector2.Zero, scale: new Vector2(1, 1) },
   },
   {
     name: "test 2 ",
     id: "2",
     type: "box",
     transform: {
-      position: new Vector3(1, 200, 3),
-      scale: new Vector3(1, 1, 1),
+      position: new Vector2(1, 200),
+      scale: new Vector2(1, 1),
     },
   },
 ];

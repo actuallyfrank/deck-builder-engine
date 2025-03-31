@@ -6,18 +6,16 @@ export type NodeTypes =
   | "light"
   | "empty";
 
-export class Vector3 {
+export class Vector2 {
   x: number;
   y: number;
-  z: number;
 
   constructor(x: number, y: number, z: number) {
     this.x = x;
     this.y = y;
-    this.z = z;
   }
 
-  static Zero: Vector3 = { x: 0, y: 0, z: 0 };
+  static Zero: Vector2 = { x: 0, y: 0 };
 }
 
 export interface SceneItem {
@@ -25,8 +23,8 @@ export interface SceneItem {
   id: string;
   type: NodeTypes;
   transform: {
-    position: Vector3;
-    scale: Vector3;
+    position: Vector2;
+    scale: Vector2;
   };
 }
 

@@ -1,6 +1,6 @@
 import { App, PIXI } from "core";
 import { Panel } from "../panel/panel";
-import { memo, RefObject, useEffect, useRef } from "react";
+import { memo, RefObject, useEffect, useRef, useState } from "react";
 import { useScene } from "../../provider/scene-provider";
 
 export const Viewport = memo(() => {
@@ -22,6 +22,8 @@ export const RenderViewport = ({
   const { sceneItems } = useScene();
   const appRef = useRef<PIXI.Application | null>(null);
 
+  const [isLoaded, setIsLoaded] = useState(false);
+
   useEffect(() => {
     const initializeApp = async () => {
       const app = await App(containerRef.current!);
@@ -33,12 +35,12 @@ export const RenderViewport = ({
       document.getElementById("viewport")?.appendChild(app.canvas);
 
       appRef.current = app;
+
+      setIsLoaded(true);
     };
 
     initializeApp();
   }, [containerRef]);
-
-  console.log("render viewport");
 
   sceneItems.forEach((item) => {
     let itemInScene = appRef.current?.stage.children.find(
@@ -53,11 +55,11 @@ export const RenderViewport = ({
       return;
     }
 
-    console.log("set position", item.transform.position);
     itemInScene.position.set(
       item.transform.position.x,
       item.transform.position.y,
     );
+    itemInScene.scale.set(item.transform.scale.x, item.transform.scale.y);
   });
 
   return (
