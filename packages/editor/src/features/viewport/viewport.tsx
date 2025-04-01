@@ -1,4 +1,4 @@
-import { App, PIXI } from "core";
+import { Engine, PIXI } from "core";
 import { Panel } from "../../components/panel/panel";
 import { memo, RefObject, useEffect, useRef, useState } from "react";
 import { useScene } from "../../provider/scene-provider";
@@ -20,21 +20,24 @@ export const RenderViewport = ({
   containerRef: RefObject<HTMLDivElement | null>;
 }) => {
   const { sceneItems } = useScene();
-  const appRef = useRef<PIXI.Application | null>(null);
+  const engineRef = useRef<Engine | null>(null);
 
   const [, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const initializeApp = async () => {
-      const app = await App(containerRef.current!);
+      const engine = new Engine({
+        debugMode: true,
+      });
+      await engine.init(containerRef.current!);
 
-      if (appRef.current) {
+      if (engineRef.current) {
         return;
       }
 
-      document.getElementById("viewport")?.appendChild(app.canvas);
+      document.getElementById("viewport")?.appendChild(engine.getCanvas());
 
-      appRef.current = app;
+      engineRef.current = engine;
 
       setIsLoaded(true);
     };
@@ -42,35 +45,21 @@ export const RenderViewport = ({
     initializeApp();
   }, [containerRef]);
 
-  sceneItems.forEach((item) => {
-    let itemInScene = appRef.current?.stage.children.find(
-      (child) => child.label === item.id,
-    );
-    if (!itemInScene) {
-      const sprite = PIXI.Sprite.from("sample.png");
-      sprite.label = item.id;
-      itemInScene = appRef.current?.stage.addChild(sprite);
-
-      console.log("add item to scene", itemInScene);
-      return;
-    }
-
-    itemInScene.position.set(
-      item.transform.position.x,
-      item.transform.position.y,
-    );
-    itemInScene.scale.set(item.transform.scale.x, item.transform.scale.y);
-
-    itemInScene.angle = item.transform.angle;
-  });
+  if (engineRef.current) {
+    engineRef.current.updateScene(sceneItems);
+  }
 
   return (
-    <div
-      id="viewport"
-      style={{
-        width: "100%",
-        height: "100%",
-      }}
-    />
+    <>
+      <button onClick={() => engineRef.current?.start()}> start </button>
+      <button onClick={() => engineRef.current?.stop()}> stop </button>
+      <div
+        id="viewport"
+        style={{
+          width: "100%",
+          height: "100%",
+        }}
+      />
+    </>
   );
 };
