@@ -1,5 +1,5 @@
 import { Application, Sprite } from "pixi.js";
-import { SceneItem } from "./types";
+import { SceneItem, ScriptComponent } from "./types";
 import { Log } from "./utils";
 
 const logger = Log.getInstance();
@@ -11,6 +11,10 @@ export interface EngineOptions {
 export class Engine {
   private app: Application;
   private isRunning: boolean = false;
+
+  private sceneItems: SceneItem[] = [];
+
+  private lastTime: number | undefined = undefined;
 
   constructor({ debugMode = false }: EngineOptions = {}) {
     if (debugMode) {
@@ -27,18 +31,31 @@ export class Engine {
     return this.app.canvas;
   }
 
-  start() {
+  start(sceneItems: SceneItem[]) {
     if (this.isRunning) {
       logger.warn("Engine is already running");
       return;
     }
 
+    this.sceneItems = sceneItems;
+    this.initializeComponents(sceneItems);
+
     this.isRunning = true;
 
-    const frame = () => {
+    const frame = (timestamp: number) => {
       if (!this.isRunning) {
         return;
       }
+
+      if (!this.lastTime) {
+        this.lastTime = timestamp;
+      }
+
+      const deltaTime = timestamp - this.lastTime;
+      this.updateComponents(deltaTime);
+      this.lastTime = timestamp;
+
+      this.updateScene(this.sceneItems);
 
       this.render();
       requestAnimationFrame(frame);
@@ -49,6 +66,35 @@ export class Engine {
 
   stop() {
     this.isRunning = false;
+    this.lastTime = undefined;
+
+    this.sceneItems = [];
+  }
+
+  private initializeComponents(sceneItems: SceneItem[]) {
+    sceneItems.forEach((item) => {
+      item.components.forEach((component) => {
+        component.sceneItem = item;
+
+        const scriptComponent = component as ScriptComponent;
+
+        if (scriptComponent.onStart) {
+          scriptComponent.onStart();
+        }
+      });
+    });
+  }
+
+  private updateComponents(deltaTime: number) {
+    this.sceneItems.forEach((item) => {
+      item.components.forEach((component) => {
+        const scriptComponent = component as ScriptComponent;
+
+        if (scriptComponent.onUpdate) {
+          scriptComponent.onUpdate(deltaTime);
+        }
+      });
+    });
   }
 
   updateScene(sceneItems: SceneItem[]) {
@@ -59,6 +105,7 @@ export class Engine {
       if (!itemInScene) {
         const sprite = Sprite.from("sample.png");
         sprite.label = item.id;
+        sprite.anchor.set(0.5);
         itemInScene = this.app.stage.addChild(sprite);
 
         logger.debug("add item to scene", itemInScene);

@@ -89,6 +89,25 @@ export const Inspector = () => {
           onChange={updateAngle}
         />
       </Panel.Area>
+      {selectedItem.components.map((component) => (
+        <Panel.Area
+          name={component.constructor.name}
+          key={component.constructor.name}
+        >
+          <div>
+            {Object.entries(component).map(([key, value]) => (
+              <div key={key}>
+                <strong>{key}</strong>:{" "}
+                {typeof value === "number" ||
+                typeof value === "string" ||
+                typeof value === "boolean"
+                  ? value
+                  : null}
+              </div>
+            ))}
+          </div>
+        </Panel.Area>
+      ))}
     </Panel>
   );
 };

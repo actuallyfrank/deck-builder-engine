@@ -51,7 +51,10 @@ export const RenderViewport = ({
 
   return (
     <>
-      <button onClick={() => engineRef.current?.start()}> start </button>
+      <button onClick={() => engineRef.current?.start(sceneItems)}>
+        {" "}
+        start{" "}
+      </button>
       <button onClick={() => engineRef.current?.stop()}> stop </button>
       <div
         id="viewport"
