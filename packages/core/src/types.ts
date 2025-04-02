@@ -18,6 +18,12 @@ export class Vector2 {
   static Zero: Vector2 = { x: 0, y: 0 };
 }
 
+export interface Transform {
+  position: Vector2;
+  scale: Vector2;
+  angle: number;
+}
+
 export interface Component {
   /**
    * Reference to the scene item this component is attached to
@@ -66,11 +72,7 @@ export interface SceneItem {
   name: string;
   id: string;
   type: NodeTypes;
-  transform: {
-    position: Vector2;
-    scale: Vector2;
-    angle: number;
-  };
+  transform: Transform;
   components: Component[];
 }
 

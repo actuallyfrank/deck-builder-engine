@@ -1,6 +1,7 @@
-import { Application, Sprite } from "pixi.js";
-import { SceneItem, ScriptComponent } from "./types";
-import { Log } from "./utils";
+import { Application, ContainerChild, Sprite } from "pixi.js";
+import { SceneItem, ScriptComponent, Transform } from "./types";
+import { Log } from "./utils/logger";
+import { initializeComponents, updateComponents } from "./utils/components";
 
 const logger = Log.getInstance();
 
@@ -38,7 +39,7 @@ export class Engine {
     }
 
     this.sceneItems = sceneItems;
-    this.initializeComponents(sceneItems);
+    initializeComponents(sceneItems);
 
     this.isRunning = true;
 
@@ -52,7 +53,7 @@ export class Engine {
       }
 
       const deltaTime = timestamp - this.lastTime;
-      this.updateComponents(deltaTime);
+      updateComponents(this.sceneItems, deltaTime);
       this.lastTime = timestamp;
 
       this.updateScene(this.sceneItems);
@@ -71,57 +72,38 @@ export class Engine {
     this.sceneItems = [];
   }
 
-  private initializeComponents(sceneItems: SceneItem[]) {
-    sceneItems.forEach((item) => {
-      item.components.forEach((component) => {
-        component.sceneItem = item;
-
-        const scriptComponent = component as ScriptComponent;
-
-        if (scriptComponent.onStart) {
-          scriptComponent.onStart();
-        }
-      });
-    });
-  }
-
-  private updateComponents(deltaTime: number) {
-    this.sceneItems.forEach((item) => {
-      item.components.forEach((component) => {
-        const scriptComponent = component as ScriptComponent;
-
-        if (scriptComponent.onUpdate) {
-          scriptComponent.onUpdate(deltaTime);
-        }
-      });
-    });
-  }
-
   updateScene(sceneItems: SceneItem[]) {
     sceneItems.forEach((item) => {
-      let itemInScene = this.app.stage.children.find(
+      let containerInscene = this.app.stage.children.find(
         (child) => child.label === item.id,
       );
-      if (!itemInScene) {
-        const sprite = Sprite.from("sample.png");
-        sprite.label = item.id;
-        sprite.anchor.set(0.5);
-        itemInScene = this.app.stage.addChild(sprite);
+      if (!containerInscene) {
+        const sprite = this.createSprite(item);
+        containerInscene = this.app.stage.addChild(sprite);
 
-        logger.debug("add item to scene", itemInScene);
+        logger.debug("add item to scene", containerInscene);
         return;
       }
 
-      itemInScene.position.set(
-        item.transform.position.x,
-        item.transform.position.y,
-      );
-      itemInScene.scale.set(item.transform.scale.x, item.transform.scale.y);
-
-      itemInScene.angle = item.transform.angle;
+      this.updateContainerTransform(containerInscene, item.transform);
     });
 
     this.render();
+  }
+
+  createSprite(item: SceneItem) {
+    const sprite = Sprite.from("sample.png");
+    sprite.label = item.id;
+    sprite.anchor.set(0.5);
+
+    return sprite;
+  }
+
+  updateContainerTransform(container: ContainerChild, transform: Transform) {
+    container.position.set(transform.position.x, transform.position.y);
+    container.scale.set(transform.scale.x, transform.scale.y);
+
+    container.angle = transform.angle;
   }
 
   render() {
