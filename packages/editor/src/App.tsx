@@ -45,7 +45,11 @@ const testItems: SceneItem[] = [
 
 function App() {
   return (
-    <SceneProvider sceneItems={testItems}>
+    <SceneProvider
+      initialScene={{
+        items: testItems,
+      }}
+    >
       <Layout>
         <Scene />
         <Viewport />

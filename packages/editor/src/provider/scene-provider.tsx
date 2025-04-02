@@ -1,4 +1,4 @@
-import { SceneItem } from "core";
+import { Scene, SceneItem } from "core";
 import { createContext, ReactNode, useContext, useState } from "react";
 
 interface SceneContextType {
@@ -12,18 +12,21 @@ interface SceneContextType {
 const SceneContext = createContext<SceneContextType | undefined>(undefined);
 
 export interface SceneProviderProps {
-  sceneItems: SceneItem[];
+  initialScene: Scene;
   children: ReactNode;
 }
 
-export const SceneProvider = ({ sceneItems, children }: SceneProviderProps) => {
+export const SceneProvider = ({
+  initialScene,
+  children,
+}: SceneProviderProps) => {
   const [selectedItemId, setSelectedItemId] = useState<string | undefined>(
     undefined,
   );
-  const [allItems, setAllItems] = useState<SceneItem[]>(sceneItems);
+  const [scene, setScene] = useState<Scene>(initialScene);
 
   const selectItem = (id: string) => {
-    const item = sceneItems.find((item) => item.id === id);
+    const item = scene.items.find((item) => item.id === id);
     if (!item) {
       throw new Error("Item not found");
     }
@@ -32,21 +35,22 @@ export const SceneProvider = ({ sceneItems, children }: SceneProviderProps) => {
   };
 
   const updateItem = (SceneItem: SceneItem) => {
-    const index = allItems.findIndex((item) => item.id === SceneItem.id);
+    const index = scene.items.findIndex((item) => item.id === SceneItem.id);
     if (index === -1) {
       throw new Error("Item not found");
     }
 
-    const newItems = [...allItems];
+    const newItems = [...scene.items];
     newItems[index] = SceneItem;
 
-    setAllItems(newItems);
+    setScene((prev) => ({ ...prev, items: newItems }));
   };
 
   const value: SceneContextType = {
-    sceneItems: allItems,
+    sceneItems: scene.items,
     selectedItemId,
-    selectedItem: allItems.find((item) => item.id === selectedItemId) || null,
+    selectedItem:
+      scene.items.find((item) => item.id === selectedItemId) || null,
     selectItem,
     updateItem,
   };

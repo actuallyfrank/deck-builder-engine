@@ -1,5 +1,5 @@
 import { Application, ContainerChild, Sprite } from "pixi.js";
-import { SceneItem, ScriptComponent, Transform } from "./types";
+import { Scene, SceneItem, ScriptComponent, Transform } from "./types";
 import { Log } from "./utils/logger";
 import { initializeComponents, updateComponents } from "./utils/components";
 
@@ -32,14 +32,14 @@ export class Engine {
     return this.app.canvas;
   }
 
-  start(sceneItems: SceneItem[]) {
+  start(scene: Scene) {
     if (this.isRunning) {
       logger.warn("Engine is already running");
       return;
     }
 
-    this.sceneItems = sceneItems;
-    initializeComponents(sceneItems);
+    this.sceneItems = scene.items;
+    initializeComponents(scene.items);
 
     this.isRunning = true;
 
@@ -56,7 +56,7 @@ export class Engine {
       updateComponents(this.sceneItems, deltaTime);
       this.lastTime = timestamp;
 
-      this.updateScene(this.sceneItems);
+      this.updateScene(scene);
 
       this.render();
       requestAnimationFrame(frame);
@@ -72,8 +72,8 @@ export class Engine {
     this.sceneItems = [];
   }
 
-  updateScene(sceneItems: SceneItem[]) {
-    sceneItems.forEach((item) => {
+  updateScene(scene: Scene) {
+    scene.items.forEach((item) => {
       let containerInscene = this.app.stage.children.find(
         (child) => child.label === item.id,
       );

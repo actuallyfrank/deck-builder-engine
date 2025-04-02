@@ -46,12 +46,12 @@ export const RenderViewport = ({
   }, [containerRef]);
 
   if (engineRef.current) {
-    engineRef.current.updateScene(sceneItems);
+    engineRef.current.updateScene({ items: sceneItems });
   }
 
   return (
     <>
-      <button onClick={() => engineRef.current?.start(sceneItems)}>
+      <button onClick={() => engineRef.current?.start({ items: sceneItems })}>
         {" "}
         start{" "}
       </button>

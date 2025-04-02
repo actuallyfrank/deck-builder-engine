@@ -77,5 +77,5 @@ export interface SceneItem {
 }
 
 export interface Scene {
-  sceneItems: SceneItem[];
+  items: SceneItem[];
 }
