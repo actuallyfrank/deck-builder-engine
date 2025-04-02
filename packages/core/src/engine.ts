@@ -1,7 +1,10 @@
-import { Application, ContainerChild, Sprite } from "pixi.js";
-import { Scene, SceneItem, ScriptComponent, Transform } from "./types";
+import { Sprite } from "pixi.js";
+import { Scene, SceneItem } from "./types";
 import { Log } from "./utils/logger";
 import { initializeComponents, updateComponents } from "./utils/components";
+import { createSceneNode, updateContainerTransform } from "./utils/scene-items";
+
+import { PixiApp } from "./app";
 
 const logger = Log.getInstance();
 
@@ -10,7 +13,7 @@ export interface EngineOptions {
 }
 
 export class Engine {
-  private app: Application;
+  private pixiApp: PixiApp;
   private isRunning: boolean = false;
 
   private sceneItems: SceneItem[] = [];
@@ -21,15 +24,15 @@ export class Engine {
     if (debugMode) {
       logger.enableDebug(true);
     }
-    this.app = new Application();
+    this.pixiApp = new PixiApp();
   }
 
   async init(resizeTo: HTMLElement | Window): Promise<void> {
-    await this.app.init({ resizeTo, autoStart: false });
+    await this.pixiApp.init(resizeTo);
   }
 
   getCanvas() {
-    return this.app.canvas;
+    return this.pixiApp.getCanvas();
   }
 
   start(scene: Scene) {
@@ -74,18 +77,16 @@ export class Engine {
 
   updateScene(scene: Scene) {
     scene.items.forEach((item) => {
-      let containerInscene = this.app.stage.children.find(
-        (child) => child.label === item.id,
-      );
+      const containerInscene = this.pixiApp.findChildById(item.id);
+
       if (!containerInscene) {
-        const sprite = this.createSprite(item);
-        containerInscene = this.app.stage.addChild(sprite);
+        this.pixiApp.addChild(createSceneNode(item));
 
         logger.debug("add item to scene", containerInscene);
         return;
       }
 
-      this.updateContainerTransform(containerInscene, item.transform);
+      updateContainerTransform(containerInscene, item.transform);
     });
 
     this.render();
@@ -99,15 +100,8 @@ export class Engine {
     return sprite;
   }
 
-  updateContainerTransform(container: ContainerChild, transform: Transform) {
-    container.position.set(transform.position.x, transform.position.y);
-    container.scale.set(transform.scale.x, transform.scale.y);
-
-    container.angle = transform.angle;
-  }
-
   render() {
     logger.debug("render");
-    this.app.render();
+    this.pixiApp.render();
   }
 }
