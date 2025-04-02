@@ -52,10 +52,12 @@ export const RenderViewport = ({
   return (
     <>
       <button onClick={() => engineRef.current?.start({ items: sceneItems })}>
-        {" "}
-        start{" "}
+        start
       </button>
-      <button onClick={() => engineRef.current?.stop()}> stop </button>
+      <button onClick={() => engineRef.current?.stop({ items: sceneItems })}>
+        {" "}
+        stop{" "}
+      </button>
       <div
         id="viewport"
         style={{

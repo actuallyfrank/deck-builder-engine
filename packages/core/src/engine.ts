@@ -4,6 +4,8 @@ import { Log } from "./utils/logger";
 import { initializeComponents, updateComponents } from "./utils/components";
 import { createSceneNode, updateContainerTransform } from "./utils/scene-items";
 
+import copy from "fast-copy";
+
 import { PixiApp } from "./app";
 
 const logger = Log.getInstance();
@@ -36,13 +38,14 @@ export class Engine {
   }
 
   start(scene: Scene) {
+    const sceneCopy = copy(scene);
     if (this.isRunning) {
       logger.warn("Engine is already running");
       return;
     }
 
-    this.sceneItems = scene.items;
-    initializeComponents(scene.items);
+    this.sceneItems = sceneCopy.items;
+    initializeComponents(sceneCopy.items);
 
     this.isRunning = true;
 
@@ -59,7 +62,7 @@ export class Engine {
       updateComponents(this.sceneItems, deltaTime);
       this.lastTime = timestamp;
 
-      this.updateScene(scene);
+      this.updateScene(sceneCopy);
 
       this.render();
       requestAnimationFrame(frame);
@@ -68,11 +71,15 @@ export class Engine {
     requestAnimationFrame(frame);
   }
 
-  stop() {
+  stop(sceneToResetTo?: Scene) {
     this.isRunning = false;
     this.lastTime = undefined;
 
     this.sceneItems = [];
+
+    if (sceneToResetTo) {
+      this.updateScene(sceneToResetTo);
+    }
   }
 
   updateScene(scene: Scene) {
