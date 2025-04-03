@@ -55,9 +55,16 @@ export const Inspector = () => {
     });
   };
 
+  const updateName = (value: string) => {
+    updateItem({
+      ...selectedItem,
+      name: value,
+    });
+  };
+
   return (
     <Panel name="inspector">
-      {"Name: " + selectedItem.name}
+      <Input name="name" value={selectedItem.name} onChange={updateName} />
       <Panel.Area name="position">
         <Input
           name="X"

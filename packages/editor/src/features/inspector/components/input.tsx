@@ -1,28 +1,45 @@
-export interface InputProps {
+import "./input.css";
+
+export interface InputProps<T extends number | string> {
   name: string;
-  value: number;
-  onChange: (value: number) => void;
+  value: T;
+  onChange: (value: T) => void;
+  type?: "number" | "text";
 }
 
-export const Input = ({ name, value, onChange }: InputProps) => {
+export const Input = <T extends number | string>({
+  name,
+  value,
+  onChange,
+  type = typeof value === "number" ? "number" : "text",
+}: InputProps<T>) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value === "") {
-      onChange(0);
-      return;
-    }
+    const inputValue = e.target.value;
 
-    const parsedValue = parseFloat(e.target.value);
-    if (isNaN(parsedValue)) {
-      return;
-    }
+    if (type === "number") {
+      if (inputValue === "") {
+        onChange(0 as unknown as T);
+        return;
+      }
 
-    onChange(parsedValue);
+      const parsedValue = parseFloat(inputValue);
+      if (!isNaN(parsedValue)) {
+        onChange(parsedValue as unknown as T);
+      }
+    } else {
+      onChange(inputValue as unknown as T);
+    }
   };
 
   return (
-    <label>
-      {name}
-      <input value={value} onChange={handleChange} />
+    <label className="input-label">
+      <span className="input-name">{name}</span>
+      <input
+        className="input-field"
+        value={value}
+        onChange={handleChange}
+        type={type}
+      />
     </label>
   );
 };

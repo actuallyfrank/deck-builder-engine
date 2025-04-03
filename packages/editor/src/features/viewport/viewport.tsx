@@ -55,8 +55,7 @@ export const RenderViewport = ({
         start
       </button>
       <button onClick={() => engineRef.current?.stop({ items: sceneItems })}>
-        {" "}
-        stop{" "}
+        stop
       </button>
       <div
         id="viewport"

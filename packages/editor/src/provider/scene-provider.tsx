@@ -6,6 +6,8 @@ interface SceneContextType {
   selectedItemId: string | undefined;
   selectedItem: SceneItem | null;
   selectItem: (id: string) => void;
+  addItem: (item: SceneItem) => void;
+  deleteItem: (id: string) => void;
   updateItem: (item: SceneItem) => void;
 }
 
@@ -34,6 +36,17 @@ export const SceneProvider = ({
     setSelectedItemId(id);
   };
 
+  const addItem = (item: SceneItem) => {
+    setScene((prev) => ({
+      items: [...prev.items, item],
+    }));
+  };
+
+  const deleteItem = (id: string) => {
+    setScene((prev) => ({
+      items: prev.items.filter((item) => item.id !== id),
+    }));
+  };
   const updateItem = (SceneItem: SceneItem) => {
     const index = scene.items.findIndex((item) => item.id === SceneItem.id);
     if (index === -1) {
@@ -53,6 +66,8 @@ export const SceneProvider = ({
       scene.items.find((item) => item.id === selectedItemId) || null,
     selectItem,
     updateItem,
+    addItem,
+    deleteItem,
   };
 
   return (
