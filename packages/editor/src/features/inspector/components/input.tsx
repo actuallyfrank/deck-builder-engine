@@ -18,17 +18,19 @@ export const Input = <T extends number | string>({
 
     if (type === "number") {
       if (inputValue === "") {
-        onChange(0 as unknown as T);
+        onChange(0 as T);
         return;
       }
 
       const parsedValue = parseFloat(inputValue);
       if (!isNaN(parsedValue)) {
-        onChange(parsedValue as unknown as T);
+        onChange(parsedValue as T);
       }
-    } else {
-      onChange(inputValue as unknown as T);
+
+      return;
     }
+
+    onChange(inputValue as T);
   };
 
   return (
