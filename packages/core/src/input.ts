@@ -53,6 +53,6 @@ export class Input {
   }
 
   public static getMousePosition() {
-    return { ...this.mousePosition };
+    return new Vector2(this.mousePosition.x, this.mousePosition.y);
   }
 }

@@ -17,7 +17,7 @@ export class Vector2 {
     this.y = y;
   }
 
-  static Zero: Vector2 = { x: 0, y: 0 };
+  static Zero: Vector2 = new Vector2(0, 0);
 }
 
 export interface Transform {

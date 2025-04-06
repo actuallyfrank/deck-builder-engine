@@ -2,9 +2,9 @@ import { BaseComponent, GoodMath, Input, ScriptComponent, Vector2 } from "core";
 
 export class RotatorComponent extends BaseComponent implements ScriptComponent {
   enabled = true;
-  rotationSpeed = 0.1;
+  rotationSpeed = 0.2;
   mouseSpeed = 0.005;
-  targetPosition: Vector2 | undefined = undefined;
+  private targetPosition: Vector2 | undefined = undefined;
 
   onStart() {
     this.targetPosition = this.sceneItem?.transform.position;
@@ -33,8 +33,7 @@ export class RotatorComponent extends BaseComponent implements ScriptComponent {
         this.targetPosition,
         deltaTime * this.mouseSpeed,
       );
-      this.sceneItem.transform.position.x = newPosition.x;
-      this.sceneItem.transform.position.y = newPosition.y;
+      this.sceneItem.transform.position = newPosition;
     }
   }
 }
