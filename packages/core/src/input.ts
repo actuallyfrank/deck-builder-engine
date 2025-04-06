@@ -6,6 +6,7 @@ const logger = Log.getInstance();
 export class Input {
   private static keys: Record<string, boolean> = {};
   private static mousePosition: Vector2 = Vector2.Zero;
+  private static mouseButton: Record<string, boolean> = {};
   private static isInit = false;
 
   public static init(canvas: HTMLElement) {
@@ -28,6 +29,14 @@ export class Input {
       this.keys[event.key] = false;
     });
 
+    window.addEventListener("mousedown", (event) => {
+      this.mouseButton[event.button] = true;
+    });
+
+    window.addEventListener("mouseup", (event) => {
+      this.mouseButton[event.button] = false;
+    });
+
     canvas.addEventListener("mousemove", ({ clientX, clientY }) => {
       const rect = canvas.getBoundingClientRect();
 
@@ -39,8 +48,11 @@ export class Input {
   public static isKeyPressed(key: string): boolean {
     return !!this.keys[key];
   }
+  public static isMouseButtonPressed(button: number): boolean {
+    return !!this.mouseButton[button];
+  }
 
   public static getMousePosition() {
-    return this.mousePosition;
+    return { ...this.mousePosition };
   }
 }

@@ -22,7 +22,10 @@ export class RotatorComponent extends BaseComponent implements ScriptComponent {
     if (Input.isKeyPressed("ArrowLeft")) {
       this.sceneItem.transform.angle -= this.rotationSpeed * deltaTime;
     }
-    this.targetPosition = Input.getMousePosition();
+
+    if (Input.isMouseButtonPressed(0)) {
+      this.targetPosition = Input.getMousePosition();
+    }
 
     if (this.targetPosition) {
       const newPosition = GoodMath.lerp(
