@@ -4,6 +4,8 @@ import { Log } from "./utils/logger";
 import { initializeComponents, updateComponents } from "./utils/components";
 import { createSceneNode, updateContainerTransform } from "./utils/scene-items";
 
+import { Input } from "./input";
+
 import copy from "fast-copy";
 
 import { PixiApp } from "./app";
@@ -31,6 +33,7 @@ export class Engine {
 
   async init(resizeTo: HTMLElement | Window): Promise<void> {
     await this.pixiApp.init(resizeTo);
+    Input.init();
   }
 
   getCanvas() {
@@ -108,7 +111,6 @@ export class Engine {
   }
 
   render() {
-    logger.debug("render");
     this.pixiApp.render();
   }
 }

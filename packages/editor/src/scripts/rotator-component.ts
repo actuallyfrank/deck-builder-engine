@@ -1,6 +1,6 @@
-import { BaseComponent } from "core";
+import { BaseComponent, Input, ScriptComponent } from "core";
 
-export class RotatorComponent extends BaseComponent {
+export class RotatorComponent extends BaseComponent implements ScriptComponent {
   enabled = true;
   rotationSpeed = 0.1;
 
@@ -11,10 +11,20 @@ export class RotatorComponent extends BaseComponent {
   onUpdate(deltaTime: number) {
     if (!this.sceneItem) return;
 
-    this.sceneItem.transform.angle += this.rotationSpeed * deltaTime;
+    if (Input.isKeyPressed("ArrowRight")) {
+      this.sceneItem.transform.angle += this.rotationSpeed * deltaTime;
+    }
 
-    console.log("onUpdate position", this.sceneItem.transform.position);
+    if (Input.isKeyPressed("ArrowLeft")) {
+      this.sceneItem.transform.angle -= this.rotationSpeed * deltaTime;
+    }
 
-    console.log("onUpdate angle", this.sceneItem.transform.angle);
+    if (Input.isKeyPressed("ArrowUp")) {
+      this.sceneItem.transform.position.y -= 1;
+    }
+
+    if (Input.isKeyPressed("ArrowDown")) {
+      this.sceneItem.transform.position.y += 1;
+    }
   }
 }
