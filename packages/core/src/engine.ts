@@ -33,7 +33,7 @@ export class Engine {
 
   async init(resizeTo: HTMLElement | Window): Promise<void> {
     await this.pixiApp.init(resizeTo);
-    Input.init();
+    Input.init(this.getCanvas());
   }
 
   getCanvas() {

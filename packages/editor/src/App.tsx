@@ -39,7 +39,7 @@ const testItems: SceneItem[] = [
       scale: new Vector2(1, 1),
       angle: 0,
     },
-    components: [new RotatorComponent()],
+    components: [],
   },
 ];
 

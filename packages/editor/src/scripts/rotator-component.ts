@@ -1,10 +1,14 @@
-import { BaseComponent, Input, ScriptComponent } from "core";
+import { BaseComponent, GoodMath, Input, ScriptComponent, Vector2 } from "core";
 
 export class RotatorComponent extends BaseComponent implements ScriptComponent {
   enabled = true;
   rotationSpeed = 0.1;
+  mouseSpeed = 0.005;
+  targetPosition: Vector2 | undefined = undefined;
 
   onStart() {
+    this.targetPosition = this.sceneItem?.transform.position;
+
     console.log("RotatorComponent started");
   }
 
@@ -18,13 +22,16 @@ export class RotatorComponent extends BaseComponent implements ScriptComponent {
     if (Input.isKeyPressed("ArrowLeft")) {
       this.sceneItem.transform.angle -= this.rotationSpeed * deltaTime;
     }
+    this.targetPosition = Input.getMousePosition();
 
-    if (Input.isKeyPressed("ArrowUp")) {
-      this.sceneItem.transform.position.y -= 1;
-    }
-
-    if (Input.isKeyPressed("ArrowDown")) {
-      this.sceneItem.transform.position.y += 1;
+    if (this.targetPosition) {
+      const newPosition = GoodMath.lerp(
+        this.sceneItem.transform.position,
+        this.targetPosition,
+        deltaTime * this.mouseSpeed,
+      );
+      this.sceneItem.transform.position.x = newPosition.x;
+      this.sceneItem.transform.position.y = newPosition.y;
     }
   }
 }

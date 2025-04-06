@@ -1,3 +1,5 @@
+import { GoodMath } from "./math";
+
 export type NodeTypes =
   | "box"
   | "sphere"
