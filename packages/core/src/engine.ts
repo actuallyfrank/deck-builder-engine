@@ -1,7 +1,6 @@
-import { Sprite } from "pixi.js";
 import { Scene, SceneItem } from "./types";
 import { Log } from "./utils/logger";
-import { initializeComponents, updateComponents } from "./utils/components";
+import { initializeSceneItem, updateComponents } from "./utils/components";
 import { createSceneNode, updateContainerTransform } from "./utils/scene-items";
 
 import { Input } from "./input";
@@ -20,7 +19,9 @@ export class Engine {
   private pixiApp: PixiApp;
   private isRunning: boolean = false;
 
-  private sceneItems: SceneItem[] = [];
+  private sceneCopy: Scene = {
+    items: [],
+  };
 
   private lastTime: number | undefined = undefined;
 
@@ -41,14 +42,13 @@ export class Engine {
   }
 
   start(scene: Scene) {
-    const sceneCopy = copy(scene);
+    this.sceneCopy = copy(scene);
     if (this.isRunning) {
       logger.warn("Engine is already running");
       return;
     }
 
-    this.sceneItems = sceneCopy.items;
-    initializeComponents(sceneCopy.items);
+    this.pixiApp.reset();
 
     this.isRunning = true;
 
@@ -62,10 +62,10 @@ export class Engine {
       }
 
       const deltaTime = timestamp - this.lastTime;
-      updateComponents(this.sceneItems, deltaTime);
+      updateComponents(this.sceneCopy.items, deltaTime);
       this.lastTime = timestamp;
 
-      this.updateScene(sceneCopy);
+      this.updateScene(this.sceneCopy);
 
       this.render();
       requestAnimationFrame(frame);
@@ -78,11 +78,29 @@ export class Engine {
     this.isRunning = false;
     this.lastTime = undefined;
 
-    this.sceneItems = [];
+    this.sceneCopy = {
+      items: [],
+    };
 
     if (sceneToResetTo) {
       this.updateScene(sceneToResetTo);
     }
+  }
+
+  initialize(sceneItem: SceneItem) {
+    logger.debug("Initializing new object", sceneItem);
+
+    this.sceneCopy.items.push(sceneItem);
+
+    initializeSceneItem(this, sceneItem);
+
+    const container = this.pixiApp.addChild(createSceneNode(sceneItem));
+
+    sceneItem.components.forEach((component) => {
+      component.init(sceneItem, container);
+    });
+
+    logger.debug("add item to scene", container);
   }
 
   updateScene(scene: Scene) {
@@ -90,9 +108,7 @@ export class Engine {
       const containerInscene = this.pixiApp.findChildById(item.id);
 
       if (!containerInscene) {
-        this.pixiApp.addChild(createSceneNode(item));
-
-        logger.debug("add item to scene", containerInscene);
+        this.initialize(item);
         return;
       }
 
@@ -100,14 +116,6 @@ export class Engine {
     });
 
     this.render();
-  }
-
-  createSprite(item: SceneItem) {
-    const sprite = Sprite.from("sample.png");
-    sprite.label = item.id;
-    sprite.anchor.set(0.5);
-
-    return sprite;
   }
 
   render() {

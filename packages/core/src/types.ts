@@ -1,4 +1,6 @@
+import { Container } from "pixi.js";
 import { GoodMath } from "./math";
+import { Engine } from "./engine";
 
 export type NodeTypes =
   | "box"
@@ -20,10 +22,34 @@ export class Vector2 {
   static Zero: Vector2 = new Vector2(0, 0);
 }
 
-export interface Transform {
+export class Transform {
   position: Vector2;
   scale: Vector2;
   angle: number;
+
+  constructor({
+    position,
+    scale,
+    angle,
+  }: {
+    position?: Vector2;
+    scale?: Vector2;
+    angle?: number;
+  }) {
+    this.position = position ?? Vector2.Zero;
+    this.scale = scale ?? new Vector2(1, 1);
+    this.angle = angle ?? 0;
+  }
+
+  up(): Vector2 {
+    const angleRad = (this.angle - 90) * GoodMath.DEG_TO_RAD;
+    return new Vector2(Math.cos(angleRad), Math.sin(angleRad));
+  }
+
+  forward(): Vector2 {
+    const angleRad = this.angle * GoodMath.DEG_TO_RAD;
+    return new Vector2(Math.cos(angleRad), Math.sin(angleRad));
+  }
 }
 
 export interface Component {
@@ -31,6 +57,10 @@ export interface Component {
    * Reference to the scene item this component is attached to
    */
   sceneItem?: SceneItem;
+
+  engine?: Engine;
+
+  init(sceneItem: SceneItem, container: Container): void;
 }
 
 export interface ScriptComponent extends Component {
@@ -66,16 +96,32 @@ export interface ScriptComponent extends Component {
   onDestroy?(): void;
 }
 
-export abstract class BaseComponent implements Component {
-  sceneItem?: SceneItem;
-}
-
-export interface SceneItem {
+export class SceneItem {
   name: string;
-  id: string;
-  type: NodeTypes;
-  transform: Transform;
-  components: Component[];
+  readonly id: string;
+  readonly transform: Transform;
+  readonly components: Component[];
+
+  constructor({
+    name,
+    id,
+    transform,
+    components,
+  }: {
+    name: string;
+    id?: string;
+    transform: Transform;
+    components: Component[];
+  }) {
+    this.name = name;
+    this.id = id ?? crypto.randomUUID();
+    this.transform = transform;
+    this.components = components;
+  }
+
+  addComponent(component: Component) {
+    this.components.push(component);
+  }
 }
 
 export interface Scene {

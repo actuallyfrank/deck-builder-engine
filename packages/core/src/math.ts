@@ -2,6 +2,7 @@ import { Vector2 } from "./types";
 
 export abstract class GoodMath {
   public static readonly PI = Math.PI;
+  public static readonly DEG_TO_RAD = this.PI / 180;
 
   /**
    * Clamps a value between min and max (inclusive)

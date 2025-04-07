@@ -1,16 +1,16 @@
+import { Engine } from "../engine";
 import { SceneItem, ScriptComponent } from "../types";
 
-export function initializeComponents(sceneItems: SceneItem[]) {
-  sceneItems.forEach((item) => {
-    item.components.forEach((component) => {
-      component.sceneItem = item;
+export function initializeSceneItem(engine: Engine, sceneItem: SceneItem) {
+  sceneItem.components.forEach((component) => {
+    component.sceneItem = sceneItem;
+    component.engine = engine;
 
-      const scriptComponent = component as ScriptComponent;
+    const scriptComponent = component as ScriptComponent;
 
-      if (scriptComponent.onStart) {
-        scriptComponent.onStart();
-      }
-    });
+    if (scriptComponent.onStart) {
+      scriptComponent.onStart();
+    }
   });
 }
 

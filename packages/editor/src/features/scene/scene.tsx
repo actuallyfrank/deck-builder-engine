@@ -1,9 +1,9 @@
-import { SceneItem } from "core";
+import { SceneItem, TextureComponent, Transform } from "core";
 import { Panel } from "../../components/panel/panel";
 import { useScene } from "../../provider/scene-provider";
 import "./scene.css";
-import { RotatorComponent } from "../../scripts/rotator-component";
 import { useKeyPress } from "../../hooks/use-keyboard-event";
+import { EnemyController } from "../../scripts/enemy-controller";
 
 export const Scene = () => {
   const { sceneItems, selectItem, selectedItemId, addItem, deleteItem } =
@@ -11,20 +11,16 @@ export const Scene = () => {
 
   const createNewItem = () => {
     const randomPosition = {
-      x: Math.random() * 1000,
-      y: Math.random() * 1000,
+      x: Math.random() * 500,
+      y: Math.random() * 500,
     };
-    const newItem: SceneItem = {
+    const newItem = new SceneItem({
       name: "test item",
-      id: crypto.randomUUID(),
-      type: "box",
-      transform: {
+      transform: new Transform({
         position: randomPosition,
-        angle: 0,
-        scale: { x: 1, y: 1 },
-      },
-      components: [new RotatorComponent()],
-    };
+      }),
+      components: [new TextureComponent("egg-head.png"), new EnemyController()],
+    });
 
     addItem(newItem);
   };

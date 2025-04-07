@@ -1,4 +1,4 @@
-import { Application, ContainerChild } from "pixi.js";
+import { Application, Container, ContainerChild } from "pixi.js";
 
 export class PixiApp {
   private app: Application;
@@ -25,5 +25,9 @@ export class PixiApp {
 
   render() {
     this.app.render();
+  }
+
+  reset() {
+    this.app.stage = new Container();
   }
 }

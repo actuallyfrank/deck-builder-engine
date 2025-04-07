@@ -47,6 +47,7 @@ export const RenderViewport = ({
 
   if (engineRef.current) {
     engineRef.current.updateScene({ items: sceneItems });
+    console.log("sceneItems", sceneItems);
   }
 
   return (
