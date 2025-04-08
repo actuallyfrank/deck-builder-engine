@@ -46,16 +46,15 @@ export const RenderViewport = ({
   }, [containerRef]);
 
   if (engineRef.current) {
-    engineRef.current.updateScene({ items: sceneItems });
-    console.log("sceneItems", sceneItems);
+    engineRef.current.updateScene({ nodes: sceneItems });
   }
 
   return (
     <>
-      <button onClick={() => engineRef.current?.start({ items: sceneItems })}>
+      <button onClick={() => engineRef.current?.start({ nodes: sceneItems })}>
         start
       </button>
-      <button onClick={() => engineRef.current?.stop({ items: sceneItems })}>
+      <button onClick={() => engineRef.current?.stop({ nodes: sceneItems })}>
         stop
       </button>
       <div

@@ -1,13 +1,13 @@
 import { Container, ContainerChild, Sprite } from "pixi.js";
-import { SceneItem, Transform } from "../types";
+import { SceneNode, Transform } from "../types";
 
-export function createSceneNode(sceneItem: SceneItem): Container {
-  const node = createContainer(sceneItem);
+export function createSceneNode(sceneNode: SceneNode): Container {
+  const node = createContainer(sceneNode);
 
   return node;
 }
 
-export function createContainer(item: SceneItem): Container {
+export function createContainer(item: SceneNode): Container {
   const container = new Container();
   container.label = item.id;
 
@@ -16,7 +16,7 @@ export function createContainer(item: SceneItem): Container {
 
 export function createSprite(
   texture: string,
-  item: SceneItem,
+  item: SceneNode,
   parent: Container,
 ): Container {
   const sprite = Sprite.from(texture);

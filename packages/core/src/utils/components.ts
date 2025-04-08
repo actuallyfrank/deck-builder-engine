@@ -1,23 +1,31 @@
+import { Container } from "pixi.js";
 import { Engine } from "../engine";
-import { SceneItem, ScriptComponent } from "../types";
+import { SceneNode } from "../types";
 
-export function initializeSceneItem(engine: Engine, sceneItem: SceneItem) {
+export function initComponents(
+  engine: Engine,
+  sceneItem: SceneNode,
+  container: Container,
+) {
   sceneItem.components.forEach((component) => {
-    component.sceneItem = sceneItem;
-    component.engine = engine;
-
-    const scriptComponent = component as ScriptComponent;
-
-    if (scriptComponent.onStart) {
-      scriptComponent.onStart();
-    }
+    Object.defineProperties(component, {
+      sceneNode: { value: sceneItem, enumerable: false },
+      engine: { value: engine, enumerable: false },
+    });
+    component.init(sceneItem, container);
   });
 }
 
-export function updateComponents(sceneItems: SceneItem[], deltaTime: number) {
+export function startComponents(sceneItem: SceneNode) {
+  sceneItem.components.forEach((component) => {
+    component.onStart?.();
+  });
+}
+
+export function updateComponents(sceneItems: SceneNode[], deltaTime: number) {
   sceneItems.forEach((item) => {
     item.components.forEach((component) => {
-      const scriptComponent = component as ScriptComponent;
+      const scriptComponent = component;
 
       scriptComponent.onUpdate?.(deltaTime);
     });

@@ -56,28 +56,25 @@ export interface Component {
   /**
    * Reference to the scene item this component is attached to
    */
-  sceneItem?: SceneItem;
+  sceneNode?: SceneNode;
 
   engine?: Engine;
 
-  init(sceneItem: SceneItem, container: Container): void;
-}
+  init(sceneItem: SceneNode, container: Container): void;
 
-export interface ScriptComponent extends Component {
+  destroy(): void;
+
+  initialize(sceneItem: SceneNode): void;
+
   /**
    * Called once when the script component is first initialized
    */
   onInit?(): void;
 
   /**
-   * Called when the component becomes enabled
+   * Called when the component is destroyed
    */
-  onEnable?(): void;
-
-  /**
-   * Called when the component becomes disabled
-   */
-  onDisable?(): void;
+  onDestroy?(): void;
 
   /**
    * Called before the first frame update
@@ -89,14 +86,9 @@ export interface ScriptComponent extends Component {
    * @param deltaTime Time in seconds since the last frame
    */
   onUpdate?(deltaTime: number): void;
-
-  /**
-   * Called when the component is destroyed
-   */
-  onDestroy?(): void;
 }
 
-export class SceneItem {
+export class SceneNode {
   name: string;
   readonly id: string;
   readonly transform: Transform;
@@ -118,12 +110,8 @@ export class SceneItem {
     this.transform = transform;
     this.components = components;
   }
-
-  addComponent(component: Component) {
-    this.components.push(component);
-  }
 }
 
 export interface Scene {
-  items: SceneItem[];
+  nodes: SceneNode[];
 }

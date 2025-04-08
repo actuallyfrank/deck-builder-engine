@@ -1,4 +1,4 @@
-import { SceneItem, TextureComponent, Transform } from "core";
+import { SceneNode, TextureComponent, Transform } from "core";
 import { Panel } from "../../components/panel/panel";
 import { useScene } from "../../provider/scene-provider";
 import "./scene.css";
@@ -14,7 +14,7 @@ export const Scene = () => {
       x: Math.random() * 500,
       y: Math.random() * 500,
     };
-    const newItem = new SceneItem({
+    const newItem = new SceneNode({
       name: "test item",
       transform: new Transform({
         position: randomPosition,

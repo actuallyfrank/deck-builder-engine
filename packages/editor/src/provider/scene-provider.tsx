@@ -1,14 +1,14 @@
-import { Scene, SceneItem } from "core";
+import { Scene, SceneNode } from "core";
 import { createContext, ReactNode, useContext, useState } from "react";
 
 interface SceneContextType {
-  sceneItems: SceneItem[];
+  sceneItems: SceneNode[];
   selectedItemId: string | undefined;
-  selectedItem: SceneItem | null;
+  selectedItem: SceneNode | null;
   selectItem: (id: string) => void;
-  addItem: (item: SceneItem) => void;
+  addItem: (item: SceneNode) => void;
   deleteItem: (id: string) => void;
-  updateItem: (item: SceneItem) => void;
+  updateItem: (item: SceneNode) => void;
 }
 
 const SceneContext = createContext<SceneContextType | undefined>(undefined);
@@ -28,7 +28,7 @@ export const SceneProvider = ({
   const [scene, setScene] = useState<Scene>(initialScene);
 
   const selectItem = (id: string) => {
-    const item = scene.items.find((item) => item.id === id);
+    const item = scene.nodes.find((item) => item.id === id);
     if (!item) {
       throw new Error("Item not found");
     }
@@ -36,34 +36,34 @@ export const SceneProvider = ({
     setSelectedItemId(id);
   };
 
-  const addItem = (item: SceneItem) => {
+  const addItem = (item: SceneNode) => {
     setScene((prev) => ({
-      items: [...prev.items, item],
+      nodes: [...prev.nodes, item],
     }));
   };
 
   const deleteItem = (id: string) => {
     setScene((prev) => ({
-      items: prev.items.filter((item) => item.id !== id),
+      nodes: prev.nodes.filter((item) => item.id !== id),
     }));
   };
-  const updateItem = (SceneItem: SceneItem) => {
-    const index = scene.items.findIndex((item) => item.id === SceneItem.id);
+  const updateItem = (SceneItem: SceneNode) => {
+    const index = scene.nodes.findIndex((item) => item.id === SceneItem.id);
     if (index === -1) {
       throw new Error("Item not found");
     }
 
-    const newItems = [...scene.items];
+    const newItems = [...scene.nodes];
     newItems[index] = SceneItem;
 
-    setScene((prev) => ({ ...prev, items: newItems }));
+    setScene((prev) => ({ ...prev, nodes: newItems }));
   };
 
   const value: SceneContextType = {
-    sceneItems: scene.items,
+    sceneItems: scene.nodes,
     selectedItemId,
     selectedItem:
-      scene.items.find((item) => item.id === selectedItemId) || null,
+      scene.nodes.find((item) => item.id === selectedItemId) || null,
     selectItem,
     updateItem,
     addItem,

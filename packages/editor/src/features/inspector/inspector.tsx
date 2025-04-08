@@ -1,6 +1,7 @@
 import { useScene } from "../../provider/scene-provider";
 import { Panel } from "../../components/panel/panel";
 import { Input } from "./components/input";
+import { Transform } from "core";
 
 export const Inspector = () => {
   const { selectedItem, updateItem } = useScene();
@@ -10,7 +11,7 @@ export const Inspector = () => {
   }
 
   const {
-    transform: { position, scale },
+    transform: { position, scale, angle },
   } = selectedItem;
 
   const updatePosition = (value: number, axis: "x" | "y") => {
@@ -22,10 +23,11 @@ export const Inspector = () => {
 
     updateItem({
       ...selectedItem,
-      transform: {
-        ...selectedItem.transform,
+      transform: new Transform({
         position: newPosition,
-      },
+        scale,
+        angle,
+      }),
     });
   };
 
@@ -38,20 +40,14 @@ export const Inspector = () => {
 
     updateItem({
       ...selectedItem,
-      transform: {
-        ...selectedItem.transform,
-        scale: newScale,
-      },
+      transform: new Transform({ scale: newScale, position, angle }),
     });
   };
 
   const updateAngle = (value: number) => {
     updateItem({
       ...selectedItem,
-      transform: {
-        ...selectedItem.transform,
-        angle: value,
-      },
+      transform: new Transform({ angle: value, position, scale }),
     });
   };
 

@@ -1,21 +1,25 @@
 import {
   BaseComponent,
-  SceneItem,
-  ScriptComponent,
+  Component,
+  SceneNode,
   TextureComponent,
   Transform,
   Vector2,
 } from "core";
 import { EnemyController } from "./enemy-controller";
 
-export class EnemySpawner extends BaseComponent implements ScriptComponent {
-  spawnInterval = 2000;
-  spawnCount = 2;
+export class EnemySpawner extends BaseComponent implements Component {
+  spawnInterval = 10000;
+  spawnCount = 4;
   spawnRadius = 100;
+  enabled = true;
 
   time = 0;
 
   onStart() {
+    if (!this.sceneNode) {
+      return;
+    }
     console.log("EnemySpawner started");
   }
 
@@ -29,8 +33,8 @@ export class EnemySpawner extends BaseComponent implements ScriptComponent {
   }
 
   spawnEnemies() {
-    if (!this.sceneItem) return;
-    const currentPosition = this.sceneItem.transform.position;
+    if (!this.sceneNode || !this.enabled) return;
+    const currentPosition = this.sceneNode.transform.position;
 
     for (let i = 0; i < this.spawnCount; i++) {
       const angle = Math.random() * Math.PI * 2;
@@ -38,7 +42,7 @@ export class EnemySpawner extends BaseComponent implements ScriptComponent {
       const x = Math.cos(angle) * radius;
       const y = Math.sin(angle) * radius;
 
-      const enemy = new SceneItem({
+      const enemy = new SceneNode({
         name: "Enemy",
         transform: new Transform({
           position: new Vector2(currentPosition.x + x, currentPosition.y + y),
@@ -49,7 +53,7 @@ export class EnemySpawner extends BaseComponent implements ScriptComponent {
         ],
       });
 
-      if (this.engine) this.engine.initialize(enemy);
+      this.initialize(enemy);
     }
   }
 }

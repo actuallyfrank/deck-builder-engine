@@ -23,6 +23,10 @@ export class PixiApp {
     return this.app.stage.addChild(child);
   }
 
+  destroyChild(child: ContainerChild) {
+    this.app.stage.removeChild(child);
+  }
+
   render() {
     this.app.render();
   }

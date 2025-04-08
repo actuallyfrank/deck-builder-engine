@@ -1,6 +1,10 @@
-import { Scene, SceneItem } from "./types";
+import { Scene, SceneNode } from "./types";
 import { Log } from "./utils/logger";
-import { initializeSceneItem, updateComponents } from "./utils/components";
+import {
+  initComponents,
+  startComponents,
+  updateComponents,
+} from "./utils/components";
 import { createSceneNode, updateContainerTransform } from "./utils/scene-items";
 
 import { Input } from "./input";
@@ -20,7 +24,7 @@ export class Engine {
   private isRunning: boolean = false;
 
   private sceneCopy: Scene = {
-    items: [],
+    nodes: [],
   };
 
   private lastTime: number | undefined = undefined;
@@ -42,12 +46,14 @@ export class Engine {
   }
 
   start(scene: Scene) {
-    this.sceneCopy = copy(scene);
     if (this.isRunning) {
       logger.warn("Engine is already running");
       return;
     }
 
+    console.log("copy", scene);
+
+    this.sceneCopy = copy(scene);
     this.pixiApp.reset();
 
     this.isRunning = true;
@@ -62,7 +68,7 @@ export class Engine {
       }
 
       const deltaTime = timestamp - this.lastTime;
-      updateComponents(this.sceneCopy.items, deltaTime);
+      updateComponents(this.sceneCopy.nodes, deltaTime);
       this.lastTime = timestamp;
 
       this.updateScene(this.sceneCopy);
@@ -78,41 +84,59 @@ export class Engine {
     this.isRunning = false;
     this.lastTime = undefined;
 
-    this.sceneCopy = {
-      items: [],
-    };
+    this.pixiApp.reset();
+    this.render();
 
     if (sceneToResetTo) {
       this.updateScene(sceneToResetTo);
     }
   }
 
-  initialize(sceneItem: SceneItem) {
-    logger.debug("Initializing new object", sceneItem);
+  initialize(sceneNode: SceneNode) {
+    logger.debug("Initializing new object", sceneNode);
 
-    this.sceneCopy.items.push(sceneItem);
+    this.sceneCopy.nodes.push(sceneNode);
 
-    initializeSceneItem(this, sceneItem);
+    const container = this.pixiApp.addChild(createSceneNode(sceneNode));
 
-    const container = this.pixiApp.addChild(createSceneNode(sceneItem));
+    initComponents(this, sceneNode, container);
 
-    sceneItem.components.forEach((component) => {
-      component.init(sceneItem, container);
+    startComponents(sceneNode);
+
+    logger.debug("add node to scene", container);
+  }
+
+  destroy(sceneNode: SceneNode) {
+    const containerInscene = this.pixiApp.findChildById(sceneNode.id);
+    if (!containerInscene) {
+      logger.error("Container not found in scene", sceneNode.id);
+      return;
+    }
+
+    this.sceneCopy.nodes = this.sceneCopy.nodes.filter(
+      (scene) => scene.id !== sceneNode.id,
+    );
+
+    this.pixiApp.destroyChild(containerInscene);
+
+    sceneNode.components.forEach((component) => {
+      component.onDestroy?.();
     });
 
-    logger.debug("add item to scene", container);
+    logger.debug("destroy node from scene", containerInscene);
   }
 
   updateScene(scene: Scene) {
-    scene.items.forEach((item) => {
-      const containerInscene = this.pixiApp.findChildById(item.id);
+    scene.nodes.forEach((node) => {
+      const containerInscene = this.pixiApp.findChildById(node.id);
 
       if (!containerInscene) {
-        this.initialize(item);
+        logger.debug("Container not found in scene, initializing", node.id);
+        this.initialize(node);
         return;
       }
 
-      updateContainerTransform(containerInscene, item.transform);
+      updateContainerTransform(containerInscene, node.transform);
     });
 
     this.render();

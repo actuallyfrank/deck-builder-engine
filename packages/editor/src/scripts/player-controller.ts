@@ -1,23 +1,23 @@
-import { BaseComponent, Input, ScriptComponent } from "core";
+import { BaseComponent, Component, Input } from "core";
 
-export class PlayerController extends BaseComponent implements ScriptComponent {
+export class PlayerController extends BaseComponent implements Component {
   rotationSpeed = 0.2;
   movementSpeed = 0.4;
   mouseSpeed = 0.005;
 
   onStart() {
-    console.log("RotatorComponent started");
+    console.log("PlayerController started");
   }
 
   onUpdate(deltaTime: number) {
-    if (!this.sceneItem) return;
+    if (!this.sceneNode) return;
 
     if (Input.isKeyPressed("ArrowRight")) {
-      this.sceneItem.transform.angle += this.rotationSpeed * deltaTime;
+      this.sceneNode.transform.angle += this.rotationSpeed * deltaTime;
     }
 
     if (Input.isKeyPressed("ArrowLeft")) {
-      this.sceneItem.transform.angle -= this.rotationSpeed * deltaTime;
+      this.sceneNode.transform.angle -= this.rotationSpeed * deltaTime;
     }
 
     if (Input.isMouseButtonPressed(0)) {
@@ -25,10 +25,10 @@ export class PlayerController extends BaseComponent implements ScriptComponent {
     }
 
     if (Input.isKeyPressed("ArrowUp")) {
-      this.sceneItem.transform.position.x +=
-        this.sceneItem.transform.up().x * deltaTime * this.movementSpeed;
-      this.sceneItem.transform.position.y +=
-        this.sceneItem.transform.up().y * deltaTime * this.movementSpeed;
+      this.sceneNode.transform.position.x +=
+        this.sceneNode.transform.up().x * deltaTime * this.movementSpeed;
+      this.sceneNode.transform.position.y +=
+        this.sceneNode.transform.up().y * deltaTime * this.movementSpeed;
     }
   }
 }
