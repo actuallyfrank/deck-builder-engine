@@ -23,6 +23,7 @@ export const RenderViewport = ({
   const engineRef = useRef<Engine | null>(null);
 
   const [, setIsLoaded] = useState(false);
+  const [isRunning, setIsRunning] = useState(false);
 
   useEffect(() => {
     const initializeApp = async () => {
@@ -51,10 +52,26 @@ export const RenderViewport = ({
 
   return (
     <>
-      <button onClick={() => engineRef.current?.start({ nodes: sceneItems })}>
+      <button
+        onClick={() =>
+          engineRef.current?.start({
+            scene: { nodes: sceneItems },
+            onStart: () => setIsRunning(true),
+          })
+        }
+        disabled={isRunning}
+      >
         start
       </button>
-      <button onClick={() => engineRef.current?.stop({ nodes: sceneItems })}>
+      <button
+        onClick={() =>
+          engineRef.current?.stop({
+            sceneToResetTo: { nodes: sceneItems },
+            onStop: () => setIsRunning(false),
+          })
+        }
+        disabled={!isRunning}
+      >
         stop
       </button>
       <div

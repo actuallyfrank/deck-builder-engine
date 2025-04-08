@@ -45,7 +45,7 @@ export class Engine {
     return this.pixiApp.getCanvas();
   }
 
-  start(scene: Scene) {
+  start({ scene, onStart }: { scene: Scene; onStart?: () => void }) {
     if (this.isRunning) {
       logger.warn("Engine is already running");
       return;
@@ -77,10 +77,17 @@ export class Engine {
       requestAnimationFrame(frame);
     };
 
+    onStart?.();
     requestAnimationFrame(frame);
   }
 
-  stop(sceneToResetTo?: Scene) {
+  stop({
+    sceneToResetTo,
+    onStop,
+  }: {
+    sceneToResetTo?: Scene;
+    onStop?: () => void;
+  }) {
     this.isRunning = false;
     this.lastTime = undefined;
 
@@ -90,6 +97,8 @@ export class Engine {
     if (sceneToResetTo) {
       this.updateScene(sceneToResetTo);
     }
+
+    onStop?.();
   }
 
   initialize(sceneNode: SceneNode) {
