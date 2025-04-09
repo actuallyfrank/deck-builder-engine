@@ -58,6 +58,15 @@ export class Engine {
 
     this.isRunning = true;
 
+    this.startUpdateLoop();
+
+    onStart?.();
+  }
+
+  startUpdateLoop() {
+    let startTime = 0;
+    let frames = 0;
+
     const frame = (timestamp: number) => {
       if (!this.isRunning) {
         return;
@@ -74,10 +83,19 @@ export class Engine {
       this.updateScene(this.sceneCopy);
 
       this.render();
+
+      startTime += deltaTime;
+      frames++;
+
+      if (startTime >= 1000) {
+        logger.debug("FPS", frames);
+
+        startTime = 0;
+        frames = 0;
+      }
       requestAnimationFrame(frame);
     };
 
-    onStart?.();
     requestAnimationFrame(frame);
   }
 
