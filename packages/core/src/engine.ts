@@ -21,7 +21,10 @@ export interface EngineOptions {
 
 export class Engine {
   private pixiApp: PixiApp;
-  private isRunning: boolean = false;
+  public get isRunning() {
+    return this._isRunning;
+  }
+  private _isRunning: boolean = false;
 
   private sceneCopy: Scene = {
     nodes: [],
@@ -46,29 +49,27 @@ export class Engine {
   }
 
   start({ scene, onStart }: { scene: Scene; onStart?: () => void }) {
-    if (this.isRunning) {
+    if (this._isRunning) {
       logger.warn("Engine is already running");
       return;
     }
 
-    console.log("copy", scene);
-
     this.sceneCopy = copy(scene);
     this.pixiApp.reset();
 
-    this.isRunning = true;
+    this._isRunning = true;
 
-    this.startUpdateLoop();
+    this.startUpdateLoop(this.sceneCopy);
 
     onStart?.();
   }
 
-  startUpdateLoop() {
+  startUpdateLoop(scene: Scene) {
     let startTime = 0;
     let frames = 0;
 
     const frame = (timestamp: number) => {
-      if (!this.isRunning) {
+      if (!this._isRunning) {
         return;
       }
 
@@ -77,10 +78,10 @@ export class Engine {
       }
 
       const deltaTime = timestamp - this.lastTime;
-      updateComponents(this.sceneCopy.nodes, deltaTime);
+      updateComponents(scene.nodes, deltaTime);
       this.lastTime = timestamp;
 
-      this.updateScene(this.sceneCopy);
+      this.updateScene(scene);
 
       this.render();
 
@@ -106,15 +107,16 @@ export class Engine {
     sceneToResetTo?: Scene;
     onStop?: () => void;
   }) {
-    this.isRunning = false;
+    this._isRunning = false;
     this.lastTime = undefined;
 
     this.pixiApp.reset();
-    this.render();
 
     if (sceneToResetTo) {
       this.updateScene(sceneToResetTo);
     }
+
+    this.render();
 
     onStop?.();
   }

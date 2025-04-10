@@ -46,7 +46,7 @@ export const RenderViewport = ({
     initializeApp();
   }, [containerRef]);
 
-  if (engineRef.current) {
+  if (engineRef.current && !engineRef.current.isRunning) {
     engineRef.current.updateScene({ nodes: sceneItems });
   }
 
