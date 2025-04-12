@@ -7,7 +7,7 @@ import { Log } from "./utils/logger";
 const logger = Log.getInstance();
 
 export abstract class BaseComponent implements Component {
-  init(sceneItem: SceneNode, container: Container): void {}
+  init(_sceneItem: SceneNode, _container: Container): void {}
   sceneNode?: SceneNode;
   engine?: Engine;
 
