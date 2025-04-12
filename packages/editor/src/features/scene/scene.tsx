@@ -3,7 +3,7 @@ import { Panel } from "../../components/panel/panel";
 import { useScene } from "../../provider/scene-provider";
 import "./scene.css";
 import { useKeyPress } from "../../hooks/use-keyboard-event";
-import { EnemyController } from "../../scripts/enemy-controller";
+import { EnemyController } from "example-scripts";
 
 export const Scene = () => {
   const { sceneItems, selectItem, selectedItemId, addItem, deleteItem } =

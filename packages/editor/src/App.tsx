@@ -11,10 +11,12 @@ import { Layout } from "./components/layout/layout";
 import { Scene } from "./features/scene/scene";
 import { Viewport } from "./features/viewport/viewport";
 import { SceneProvider } from "./provider/scene-provider";
-import { PlayerController } from "./scripts/player-controller";
-import { EnemyController } from "./scripts/enemy-controller";
-import { EnemySpawner } from "./scripts/enemy-spawner";
-import { DragController } from "./scripts/drag-controller";
+import {
+  DragController,
+  EnemyController,
+  EnemySpawner,
+  PlayerController,
+} from "example-scripts";
 
 const testItems: SceneNode[] = [
   new SceneNode({

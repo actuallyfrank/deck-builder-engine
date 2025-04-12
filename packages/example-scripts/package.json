@@ -1,5 +1,5 @@
 {
-  "name": "core",
+  "name": "example-scripts",
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fast-copy": "^3.0.2",
-    "pixi.js": "^8.9.0"
+    "core": "workspace:*"
   }
 }

@@ -35,7 +35,7 @@ export class Transform {
     position?: Vector2;
     scale?: Vector2;
     angle?: number;
-  }) {
+  } = {}) {
     this.position = position ?? Vector2.Zero;
     this.scale = scale ?? new Vector2(1, 1);
     this.angle = angle ?? 0;
