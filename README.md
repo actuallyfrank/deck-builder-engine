@@ -1,5 +1,5 @@
-# Deck Builder Engine
+# Game engine
 
-This is a simple deck builder engine that allows you to create a deck of cards and shuffle them.
+This project is a custom game engine.
 
 - Actuallyfrank
