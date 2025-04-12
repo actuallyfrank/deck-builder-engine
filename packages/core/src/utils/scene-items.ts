@@ -1,4 +1,4 @@
-import { Container, ContainerChild, Sprite } from "pixi.js";
+import { Container, ContainerChild, Graphics, Sprite } from "pixi.js";
 import { SceneNode, Transform } from "../types";
 
 export function createSceneNode(sceneNode: SceneNode): Container {
@@ -14,18 +14,25 @@ export function createContainer(item: SceneNode): Container {
   return container;
 }
 
-export function createSprite(
-  texture: string,
-  item: SceneNode,
-  parent: Container,
-): Container {
+export function createSprite(texture: string, item: SceneNode): Container {
   const sprite = Sprite.from(texture);
   sprite.label = item.id + "sprite";
   sprite.anchor.set(0.5);
 
-  parent.addChild(sprite);
-
   return sprite;
+}
+
+export function createRect(
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  item: SceneNode,
+): Container {
+  const rect = new Graphics().rect(x, y, w, h).fill("0xFF0000");
+  rect.label = item.id + "rect";
+
+  return rect;
 }
 
 export function updateContainerTransform(

@@ -86,6 +86,10 @@ export interface Component {
    * @param deltaTime Time in seconds since the last frame
    */
   onUpdate?(deltaTime: number): void;
+
+  onMouseDown?(position: Vector2): void;
+  onMouseUp?(position: Vector2): void;
+  onDrag?(position: Vector2): void;
 }
 
 export class SceneNode {

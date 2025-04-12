@@ -1,4 +1,10 @@
-import { SceneNode, TextureComponent, Transform, Vector2 } from "core";
+import {
+  CollisionComponent,
+  SceneNode,
+  TextureComponent,
+  Transform,
+  Vector2,
+} from "core";
 import "./App.css";
 import { Inspector } from "./features/inspector/inspector";
 import { Layout } from "./components/layout/layout";
@@ -8,6 +14,7 @@ import { SceneProvider } from "./provider/scene-provider";
 import { PlayerController } from "./scripts/player-controller";
 import { EnemyController } from "./scripts/enemy-controller";
 import { EnemySpawner } from "./scripts/enemy-spawner";
+import { DragController } from "./scripts/drag-controller";
 
 const testItems: SceneNode[] = [
   new SceneNode({
@@ -17,7 +24,11 @@ const testItems: SceneNode[] = [
       scale: new Vector2(0.5, 0.5),
       angle: 0,
     }),
-    components: [new PlayerController(), new TextureComponent("sample.png")],
+    components: [
+      new PlayerController(),
+      new TextureComponent("sample.png"),
+      new CollisionComponent(200, 200),
+    ],
   }),
   new SceneNode({
     name: "Enemy ",
@@ -36,6 +47,18 @@ const testItems: SceneNode[] = [
       angle: 0,
     }),
     components: [new EnemySpawner()],
+  }),
+  new SceneNode({
+    name: "drag demo",
+    transform: new Transform({
+      position: new Vector2(200, 200),
+      scale: new Vector2(0.1, 0.1),
+    }),
+    components: [
+      new CollisionComponent(1000, 1000),
+      new DragController(),
+      new TextureComponent("crate.png"),
+    ],
   }),
 ];
 
